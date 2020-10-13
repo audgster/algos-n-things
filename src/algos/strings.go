@@ -1,6 +1,7 @@
 package algos
 
 import (
+	"strconv"
 	"strings"
 )
 
@@ -131,4 +132,97 @@ func shiftRight(array *[]rune, startIndex int, endIndex int, n int) {
 	for i := endIndex; i > startIndex; i-- {
 		(*array)[i+n] = (*array)[i]
 	}
+}
+
+// StringCompression - Simple compression for strings by counting duplicate chars together. i.e. aaabbb becomes a3b3
+func StringCompression(input string) string {
+	if len(input) == 0 {
+		return input
+	}
+
+	characters := []rune(input)
+
+	currChar := characters[0]
+	currCharCount := 0
+	isCompressed := false
+
+	var buffer strings.Builder
+
+	for _, char := range characters {
+		if char != currChar {
+			buffer.WriteString(string(currChar))
+			buffer.WriteString(strconv.Itoa(currCharCount))
+
+			currChar = char
+			currCharCount = 1
+		} else {
+			currCharCount++
+
+			if currCharCount > 1 {
+				isCompressed = true
+			}
+		}
+	}
+
+	// Write the last character
+	buffer.WriteString(string(currChar))
+	buffer.WriteString(strconv.Itoa(currCharCount))
+
+	if isCompressed {
+		return buffer.String()
+	}
+
+	return input
+}
+
+// ZeroMatrixRowColumn - When the value in a matrix is 0, set column and row to zero
+func ZeroMatrixRowColumn(matrix [][]int) [][]int {
+	// My assumption is that you are masking
+	// Row: i, Column j
+
+	if len(matrix) == 0 {
+		return matrix
+	}
+
+	if len(matrix[0]) == 0 {
+		return matrix
+	}
+
+	rows := make([]bool, len(matrix))
+	columns := make([]bool, len(matrix[0]))
+
+	for i := 0; i < len(matrix); i++ {
+		if rows[i] {
+			continue
+		}
+
+		for j := 0; j < len(matrix[i]); j++ {
+			if columns[j] {
+				continue
+			}
+
+			if matrix[i][j] == 0 {
+				rows[i] = true
+				columns[j] = true
+			}
+		}
+	}
+
+	for row, set := range rows {
+		for j := 0; j < len(matrix[row]); j++ {
+			if set {
+				matrix[row][j] = 0
+			}
+		}
+	}
+
+	for column, set := range rows {
+		for i := 0; i < len(matrix[column]); i++ {
+			if set {
+				matrix[i][column] = 0
+			}
+		}
+	}
+
+	return matrix
 }

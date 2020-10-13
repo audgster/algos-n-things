@@ -1,3 +1,0 @@
-This is another
-set of some long text
-that spans many lines
